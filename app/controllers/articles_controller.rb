@@ -7,6 +7,8 @@ class ArticlesController < ApplicationController
 
     
       if params[:query].present?
+          save_search if valid_search?
+        
          @articles =  Article.where("name LIKE ?", "%#{params[:query]}%")
       else
          @articles =  Article.all
@@ -80,4 +82,43 @@ class ArticlesController < ApplicationController
     def article_params
       params.require(:article).permit(:name)
     end
+
+    
+  def query_param
+    params[:query]&.strip
+  end
+
+  def latest_search
+    @latest_search ||= Search.in_descending_order_by(current_user).first
+  end
+  
+  def save_search
+    if create_new_search?
+      Search.create(query: query_param, user: current_user)
+    else
+      latest_search.update(query: query_param)
+    end
+  end
+  
+  def create_new_search?
+    latest_search.blank? || !similarity_check(latest_search&.query, query_param)
+  end
+
+  def valid_search?
+    return true if latest_search.blank?
+    query_param_length = query_param.to_s.length
+    !latest_search.query.include?(query_param) || latest_search.query.length < query_param_length
+   
+  end
+
+  def similarity_check(str1, str2)
+    
+  
+    levenshtein = Amatch::Levenshtein.new(str1)
+    distance = levenshtein.match(str2)
+    similarity = 1 - distance / [str1.length, str2.length].max.to_f
+
+    similarity > 0.6
+   
+  end
 end

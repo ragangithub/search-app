@@ -3,7 +3,8 @@ class SearchesController < ApplicationController
 
   # GET /searches or /searches.json
   def index
-    @searches = Search.all
+    # @searches = Search.all
+    @searches = Search.where(user: current_user).limit(10)
   end
 
   # GET /searches/1 or /searches/1.json
