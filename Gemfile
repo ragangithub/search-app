@@ -29,9 +29,6 @@ gem "cssbundling-rails"
 # Build JSON APIs with ease [https://github.com/rails/jbuilder]
 gem "jbuilder"
 
-gem 'fuzzy-string-match', '~> 1.0', '>= 1.0.1'
-
-
 gem 'amatch', '~> 0.4.0'
 
 # Use Redis adapter to run Action Cable in production
