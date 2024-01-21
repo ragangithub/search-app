@@ -8,12 +8,27 @@
 
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
     <%= javascript_include_tag "application", "data-turbo-track": "reload", type: "module" %>
-   
+    
 
   </head>
 
   <body>
   <div class="container mx-auto my-16 lg:px-10 px-4">
+  <nav class="bg-gray-800  p-4">
+  <div class="flex justify-between">
+  <a href="#" class="text-white font-bold">Search</a>
+  <div class="flex">
+    <ul class="flex space-x-4">
+      <li class="relative group">
+        <%= link_to "Search", root_path, class: "text-white" %>
+      </li>
+      <li class="relative group">
+        <%= link_to "Analytics", searches_path, class: "text-white" %>
+      </li>
+    </ul>
+    </div>
+  </div>
+</nav>
     <%= yield %>
   </div>
 

@@ -88,36 +88,33 @@ class ArticlesController < ApplicationController
     params[:query]&.strip
   end
 
-  def latest_search
-    @latest_search ||= Search.in_descending_order_by(current_user).first
+  def recent_search
+    @recent_search ||= Search.order_by(current_user).first
   end
   
   def save_search
     if create_new_search?
       Search.create(query: query_param, user: current_user)
     else
-      latest_search.update(query: query_param)
+      recent_search.update(query: query_param)
     end
   end
   
   def create_new_search?
-    latest_search.blank? || !similarity_check(latest_search&.query, query_param)
+    recent_search.blank? || !similarity_check(recent_search&.query, query_param)
   end
 
   def valid_search?
-    return true if latest_search.blank?
+    return true if recent_search.blank?
     query_param_length = query_param.to_s.length
-    !latest_search.query.include?(query_param) || latest_search.query.length < query_param_length
+    !recent_search.query.include?(query_param) || recent_search.query.length < query_param_length
    
   end
 
   def similarity_check(str1, str2)
-    
-  
     levenshtein = Amatch::Levenshtein.new(str1)
     distance = levenshtein.match(str2)
     similarity = 1 - distance / [str1.length, str2.length].max.to_f
-
     similarity > 0.6
    
   end
